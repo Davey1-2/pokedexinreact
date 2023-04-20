@@ -1,12 +1,16 @@
 import React from 'react';
-
-import Pokedex from "@/pokedex/pokedex";
+import {AppProvider} from "../passwordgen/State";
+import Generator from "../passwordgen/Generator";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const Home: React.FC = () => {
     return (
-        <Pokedex/>
+        <AppProvider>
+            <Generator />
+        </AppProvider>
     );
 };
 
 export default Home;
+
