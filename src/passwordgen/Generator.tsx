@@ -2,57 +2,63 @@ import React, {useContext} from 'react';
 import {AppContext} from "./State";
 
 
-function PasswordGenerator() {
+function Generator() {
     const {state, dispatch} = useContext(AppContext);
 
     function generatePassword() {
         const {length, includeUppercase, includeNumbers, includeSymbols} = state.options;
 
-        let characters = 'abcdefghijklmnopqrstuvwxyz';
+        const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+        const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const numbers = '0123456789';
+        const symbols = '}_%$":|-[){*.=/+^&@#(!;?]';
+
+        let text = lowercaseLetters;
         if (includeUppercase) {
-            characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            text += uppercaseLetters;
         }
         if (includeNumbers) {
-            characters += '0123456789';
+            text += numbers;
         }
         if (includeSymbols) {
-            characters += '}_%$":|-[){*.=/+^&@#(!;?],';
+            text += symbols;
         }
+
         let password = '';
         for (let i = 0; i < length; i++) {
-            password += characters.charAt(Math.random() * characters.length);
+            const randomIndex = Math.floor(Math.random() * text.length);
+            password += text.charAt(randomIndex);
         }
 
         dispatch({type: 'updatePassword', payload: password});
     }
 
+
     function length(event: React.ChangeEvent<HTMLInputElement>) {
         const length = parseInt(event.target.value);
         const options = {...state.options, length};
-        dispatch({type: 'updateOptions', payload: options});
+        dispatch({type: 'update', payload: options});
     }
 
     function useSymbols(event: React.ChangeEvent<HTMLInputElement>) {
         const symbols = event.target.checked;
         const options = { ...state.options, includeSymbols: symbols };
-        dispatch({ type: 'updateOptions', payload: options });
+        dispatch({ type: 'update', payload: options });
     }
 
-
-    function numbersChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function numberSwitch(event: React.ChangeEvent<HTMLInputElement>) {
         const numbers = event.target.checked;
         const options = {...state.options,includeNumbers : numbers};
-        dispatch({type: 'updateOptions', payload: options});
+        dispatch({type: 'update', payload: options});
     }
 
-    function uppercaseChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function uppercaseSwitch(event: React.ChangeEvent<HTMLInputElement>) {
         const uppercase = event.target.checked;
         const options = {...state.options, includeUppercase: uppercase};
-        dispatch({type: 'updateOptions', payload: options});
+        dispatch({type: 'update', payload: options});
     }
 
 
-    //chatgpt generated html - nebyly nervy na html je mi lito
     return (
         <div className="container my-5">
             <h1 className="text-center mb-5">Password Generator</h1>
@@ -77,7 +83,7 @@ function PasswordGenerator() {
                             type="checkbox"
                             className="form-check-input"
                             checked={state.options.includeUppercase}
-                            onChange={uppercaseChange}
+                            onChange={uppercaseSwitch}
                         />
                         <label htmlFor="uppercase" className="form-check-label">Yes</label>
                     </div>
@@ -92,7 +98,7 @@ function PasswordGenerator() {
                             type="checkbox"
                             className="form-check-input"
                             checked={state.options.includeNumbers}
-                            onChange={numbersChange}
+                            onChange={numberSwitch}
                         />
                         <label htmlFor="numbers" className="form-check-label">Yes</label>
                     </div>
@@ -125,4 +131,4 @@ function PasswordGenerator() {
     );
 }
 
-export default PasswordGenerator;
+export default Generator;
